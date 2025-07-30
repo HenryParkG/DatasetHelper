@@ -3,8 +3,8 @@ import shutil
 import random
 
 # 원본 경로
-src_image_dir = r"D:\1_Yagai\3_Yagai_sausage_dataset\image\YOLO-OD\0730\images"
-src_label_dir = r"D:\1_Yagai\3_Yagai_sausage_dataset\image\YOLO-OD\0730\labels"
+src_image_dir = r"D:\original\images"
+src_label_dir = r"D:\original\labels"
 
 # 저장 경로
 dst_base = "dataset"
