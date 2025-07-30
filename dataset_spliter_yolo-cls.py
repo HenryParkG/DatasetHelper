@@ -35,8 +35,8 @@ def split_classification_dataset(source_dir, output_dir, train_ratio=0.8, val_ra
 
 # 예시 사용
 split_classification_dataset(
-    source_dir=r"D:\1_Yagai\3_Yagai_sausage_dataset\image\0717_include_background_merged\0717_crop",       # A/B/C 폴더가 있는 원본
-    output_dir=r"D:\1_Yagai\3_Yagai_sausage_dataset\image\0717_include_background_merged\0717_crop_dataset",          # train/val/test 생성될 폴더
+    source_dir=r"D:\original",       # A/B/C 폴더가 있는 원본
+    output_dir=r"D:\modified",          # train/val/test 생성될 폴더
     train_ratio=0.8,
     val_ratio=0.1,
     test_ratio=0.1
