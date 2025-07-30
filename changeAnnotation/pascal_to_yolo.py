@@ -2,11 +2,11 @@ import os
 import xml.etree.ElementTree as ET
 
 # 클래스 목록 정의 (VOC에 나오는 클래스 순서 중요)
-classes = ['Defect']  # 여기에 실제 클래스명 추가
+classes = ['A']  # 여기에 실제 클래스명 추가
 
 # 경로 설정
-xml_folder = r"D:\1_Yagai\3_Yagai_sausage_dataset\image\YOLO-OD\0730\labels"  # Pascal VOC XML 라벨 폴더
-output_folder = r"D:\1_Yagai\3_Yagai_sausage_dataset\image\YOLO-OD\0730\images\labels_d"  # YOLO txt 저장할 폴더
+xml_folder = r"D:\oringinal\labels"  # Pascal VOC XML 라벨 폴더
+output_folder = r"D:\new\labels"  # YOLO txt 저장할 폴더
 os.makedirs(output_folder, exist_ok=True)
 
 def convert_bbox(size, box):
