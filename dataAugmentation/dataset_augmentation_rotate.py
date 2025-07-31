@@ -24,5 +24,5 @@ def rotate_images_180_in_place(input_dir):
     print(f"{len(image_files)}장의 이미지가 180도 회전되어 저장되었습니다.")
 
 
-input_folder = r"D:\data\original"
+input_folder = r"D:\data"
 rotate_images_180_in_place(input_folder)
