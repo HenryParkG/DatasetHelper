@@ -4,9 +4,9 @@ from pathlib import Path
 from ultralytics import YOLO
 
 # 설정
-image_dir = r'D:\1_Yagai\3_Yagai_sausage_dataset\image\0801_fraction\images'
-output_dir = r'D:\1_Yagai\3_Yagai_sausage_dataset\image\0801_fraction\labels'
-model_path = r'D:\1_Yagai\3_Yagai_sausage_dataset\image\YOLO-OD\runs\detect\train\weights\best.pt'
+image_dir = r'D:\test\images'
+output_dir = r'D:\test\labels'
+model_path = r'D:\runs\detect\train\weights\best.pt'
 img_size = 640
 conf_thres = 0.68
 
@@ -44,3 +44,4 @@ for img_name in image_files:
             f.write(f"{cls_id} {x_center:.6f} {y_center:.6f} {box_w:.6f} {box_h:.6f}\n")
 
 print("YOLO 라벨 생성 완료.")
+
