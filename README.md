@@ -1,10 +1,10 @@
 이미지 데이터 라벨링 후 데이터셋을 생성할때 유용하게 사용할 수 있는 파이썬 스크립트 입니다.
 -------------------------------------------------------------------------------------------------
-changeAnnotation
+*changeAnnotation
 - 어노테이션 방식을 전환
-dataAugmentation
+*dataAugmentation
 - 이미지 데이터 증강을 위한 파이썬 스크립트
-dataGenerator
+*dataGenerator
 - 이미지 생성을 위한 파이썬 스크립트
-spliter
+*spliter
 - 라벨링된 데이터를 YOLO 데이터셋 형식으로 생성
