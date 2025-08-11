@@ -1,3 +1,4 @@
+# YOLO 이미지 데이터를 분할하여 train/val/test 폴더로 나누는 스크립트
 import os
 import shutil
 import random

@@ -1,3 +1,4 @@
+# VOC XML 라벨을 YOLO 형식의 txt 파일로 변환하는 스크립트
 import os
 import xml.etree.ElementTree as ET
 

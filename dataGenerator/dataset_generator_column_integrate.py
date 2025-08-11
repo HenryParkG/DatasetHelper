@@ -1,3 +1,4 @@
+# 이미지를 4열로 분할하여 각각의 이미지를 저장하는 스크립트입니다.
 import os
 import random
 from tkinter import Tk, filedialog
