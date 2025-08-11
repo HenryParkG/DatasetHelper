@@ -1,3 +1,4 @@
+# 동영상을 프레임 단위로 분할하여 저장하는 스크립트
 import os
 import cv2
 import tkinter as tk

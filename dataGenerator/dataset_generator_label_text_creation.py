@@ -1,3 +1,4 @@
+# YOLO 라벨 생성 스크립트
 import os
 import cv2
 from pathlib import Path
