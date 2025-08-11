@@ -39,6 +39,8 @@ def main():
     frame2.pack(fill="x", padx=10, pady=5)
     create_button(frame2, "밝기 및 대비 조정", "dataAugmentation/dataset_augmentation_brightness.py")
     create_button(frame2, "이미지 180도 회전", "dataAugmentation/dataset_augmentation_rotate.py")
+    create_button(frame2, "자르기", "dataAugmentation/dataset_augmentation_crop.py")
+
 
     # dataGenerator 폴더
     frame3 = tk.LabelFrame(root, text="dataGenerator", padx=10, pady=10)
