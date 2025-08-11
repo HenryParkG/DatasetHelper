@@ -25,8 +25,8 @@ def create_button(frame, text, script_relative_path):
 
 def main():
     root = tk.Tk()
-    root.title("Project Script Launcher")
-    root.geometry("500x700")
+    root.title("DatasetHelper Script Launcher")
+    root.geometry("500x800")
 
     # changeAnnotation 폴더
     frame1 = tk.LabelFrame(root, text="changeAnnotation", padx=10, pady=10)
@@ -49,7 +49,6 @@ def main():
     frame3 = tk.LabelFrame(root, text="dataGenerator", padx=10, pady=10)
     frame3.pack(fill="x", padx=10, pady=5)
     create_button(frame3, "컬럼별 데이터 생성 통합", "dataGenerator/dataset_generatior_column_integrate.py")
-    create_button(frame3, "FFmpeg 프레임 분할", "dataGenerator/dataset_generator_ffmpeg_frame_splitter.py")
     create_button(frame3, "라벨 생성", "dataGenerator/dataset_generator_label_creation.py")
 
     # spliter 폴더
@@ -57,6 +56,12 @@ def main():
     frame4.pack(fill="x", padx=10, pady=5)
     create_button(frame4, "YOLO 분류용 데이터 분할", "spliter/dataset_spliter_yolo-cls.py")
     create_button(frame4, "YOLO 객체검출용 데이터 분할", "spliter/dataset_spliter_yolo-od.py")
+
+
+    frame5 = tk.LabelFrame(root, text="video", padx=10, pady=10)
+    frame5.pack(fill="x", padx=10, pady=5)
+    create_button(frame5, "FFmpeg 동영상 병합", "dataGenerator/ffmpeg_merge_videos.py")
+    create_button(frame5, "FFmpeg 프레임 분할", "dataGenerator/ffmpeg_frame_splitter.py")
 
     name_label = tk.Label(root, text="HenryParkG | GitHub: https://github.com/HenryParkG/DatasetHelper", font=("Arial", 10, "italic"), fg="gray")
     name_label.pack(side="bottom", pady=10)
