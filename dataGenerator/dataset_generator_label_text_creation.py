@@ -1,13 +1,13 @@
-# YOLO 라벨 생성 스크립트
+# 이미 존재하는 모델 파일을 사용하여 이미지에 대한 라벨을 생성하는 스크립트입니다.
 import os
 import cv2
 from pathlib import Path
 from ultralytics import YOLO
 
 # 설정
-image_dir = r'D:\test\images'
-output_dir = r'D:\test\labels'
-model_path = r'D:\runs\detect\train\weights\best.pt'
+image_dir = r'D:\test\images' # 대상 이미지 경로
+output_dir = r'D:\test\labels' # 라벨 저장 경로
+model_path = r'D:\runs\detect\train\weights\best.pt' # 이미 존재하는 모델 파일 경로
 img_size = 640
 conf_thres = 0.68
 
@@ -18,7 +18,7 @@ os.makedirs(output_dir, exist_ok=True)
 model = YOLO(model_path)
 
 # 이미지 추론 및 라벨 생성
-image_files = [f for f in os.listdir(image_dir) if f.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp'))]
+image_files = [f for f in os.listdir(image_dir) if f.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp'))] # 이미지 파일 필터링
 
 for img_name in image_files:
     img_path = os.path.join(image_dir, img_name)
