@@ -1,7 +1,7 @@
-# 밝기 조정 및 대비 조정 스크립트
 import cv2
 import os
 from glob import glob
+from tkinter import Tk, filedialog
 
 def adjust_brightness_contrast(image, alpha=1.0, beta=0):
     """
@@ -31,6 +31,15 @@ def process_images_in_folder(folder_path, prefix='bright_', alpha=1.0, beta=30):
         cv2.imwrite(new_path, adjusted)
         print(f"Saved: {new_path}")
 
-# 사용 예시
-folder = 'D:/your/image/folder'  # <- 여기에 경로 넣으세요
-process_images_in_folder(folder, prefix='bright_', alpha=1.0, beta=50)
+# Tkinter 초기화 (창 숨김)
+root = Tk()
+root.withdraw()
+
+print("이미지 폴더를 선택하세요.")
+folder = filedialog.askdirectory(title="이미지 폴더 선택")
+
+if folder:
+    # 필요에 따라 alpha, beta 값 변경
+    process_images_in_folder(folder, prefix='bright_', alpha=1.0, beta=50)
+else:
+    print("폴더가 선택되지 않았습니다.")

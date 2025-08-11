@@ -1,6 +1,6 @@
-# 회전한 이미지를 원본 이미지와 같은 폴더에 저장하는 코드
 import os
 import cv2
+from tkinter import Tk, filedialog
 
 def rotate_images_180_in_place(input_dir):
     image_files = [f for f in os.listdir(input_dir)
@@ -24,6 +24,14 @@ def rotate_images_180_in_place(input_dir):
 
     print(f"{len(image_files)}장의 이미지가 180도 회전되어 저장되었습니다.")
 
+# Tkinter 초기화 (창 숨김)
+root = Tk()
+root.withdraw()
 
-input_folder = r"D:\data"
-rotate_images_180_in_place(input_folder)
+print("이미지가 있는 폴더를 선택하세요.")
+input_folder = filedialog.askdirectory(title="이미지 폴더 선택")
+
+if input_folder:
+    rotate_images_180_in_place(input_folder)
+else:
+    print("폴더가 선택되지 않았습니다.")

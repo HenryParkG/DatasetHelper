@@ -1,7 +1,7 @@
-# YOLO 이미지 데이터를 분할하여 train/val/test 폴더로 나누는 스크립트
 import os
 import shutil
 import random
+from tkinter import Tk, filedialog
 
 def split_classification_dataset(source_dir, output_dir, train_ratio=0.8, val_ratio=0.1, test_ratio=0.1):
     assert abs(train_ratio + val_ratio + test_ratio - 1.0) < 1e-6
@@ -34,11 +34,25 @@ def split_classification_dataset(source_dir, output_dir, train_ratio=0.8, val_ra
 
     print("✅ 데이터셋 분할 완료.")
 
-# 예시 사용
-split_classification_dataset(
-    source_dir=r"D:\original",       # A/B/C 폴더가 있는 원본
-    output_dir=r"D:\modified",          # train/val/test 생성될 폴더
-    train_ratio=0.8,
-    val_ratio=0.1,
-    test_ratio=0.1
-)
+if __name__ == "__main__":
+    root = Tk()
+    root.withdraw()  # GUI 숨기기
+
+    print("원본 데이터셋이 있는 폴더를 선택하세요.")
+    source_dir = filedialog.askdirectory(title="원본 데이터셋 폴더 선택")
+    if not source_dir:
+        print("❌ 원본 폴더를 선택하지 않았습니다. 종료합니다.")
+        exit()
+
+    print("분할된 데이터셋을 저장할 폴더를 선택하세요.")
+    output_dir = filedialog.askdirectory(title="출력 폴더 선택")
+    if not output_dir:
+        print("❌ 출력 폴더를 선택하지 않았습니다. 종료합니다.")
+        exit()
+
+    # 비율 설정 필요하면 여기서 수정 가능
+    train_ratio = 0.8
+    val_ratio = 0.1
+    test_ratio = 0.1
+
+    split_classification_dataset(source_dir, output_dir, train_ratio, val_ratio, test_ratio)

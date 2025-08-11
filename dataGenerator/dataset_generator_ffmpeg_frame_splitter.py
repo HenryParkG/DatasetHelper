@@ -1,15 +1,21 @@
-# 동영상을 프레임 단위로 분할하여 저장하는 스크립트
 import os
 import cv2
 import tkinter as tk
 from tkinter import filedialog
 
-# 1. 원본 경로
-input_dir = r"D:\ComfyUI\output"
-
-# 2. 저장 경로 선택 (파일 탐색기 창)
+# Tkinter 기본창 숨김
 root = tk.Tk()
-root.withdraw()  # Tkinter 기본창 숨김
+root.withdraw()
+
+# 1. 원본 비디오 폴더 선택
+print("원본 영상이 있는 폴더를 선택하세요.")
+input_dir = filedialog.askdirectory(title="원본 영상 폴더 선택")
+if not input_dir:
+    print("원본 영상 폴더를 선택하지 않았습니다. 종료합니다.")
+    exit()
+
+# 2. 저장 경로 선택
+print("프레임을 저장할 폴더를 선택하세요.")
 save_dir = filedialog.askdirectory(title="프레임 저장할 폴더 선택")
 if not save_dir:
     print("저장 경로를 선택하지 않았습니다. 종료합니다.")

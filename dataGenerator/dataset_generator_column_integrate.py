@@ -1,4 +1,3 @@
-# 이미지를 4열로 분할하여 각각의 이미지를 저장하는 스크립트입니다.
 import os
 import random
 from tkinter import Tk, filedialog
@@ -7,9 +6,8 @@ from PIL import Image
 def select_folder(prompt):
     """파일 탐색기를 열어 폴더를 선택하도록 함."""
     root = Tk()
-    root.withdraw()  # Tkinter GUI 숨김
-    folder_path = filedialog.askdirectory(title=prompt)
-    return folder_path
+    root.withdraw()  # Tkinter 기본창 숨김
+    return filedialog.askdirectory(title=prompt)
 
 def stitch_images_horizontally(image_paths, output_path):
     """이미지들을 가로로 이어붙이고 저장."""
@@ -55,17 +53,24 @@ def main():
         print("이미지가 4개 이상 있어야 합니다. 프로그램을 종료합니다.")
         return
     
-    for i in range(1, 21):  # 1부터 20까지 반복
+    # 반복 횟수 입력 받기
+    try:
+        repeat_count = int(input("몇 장의 결과 이미지를 만들까요? (예: 20) : "))
+    except ValueError:
+        print("숫자를 입력해야 합니다. 프로그램을 종료합니다.")
+        return
+    
+    for i in range(1, repeat_count + 1):
         # 랜덤으로 4개의 이미지 선택
         selected_images = random.sample(image_files, 4)
         selected_image_paths = [os.path.join(input_folder, img) for img in selected_images]
         
-        # 결과 저장 경로 설정 (파일명에 번호 추가)
+        # 결과 저장 경로 설정
         output_path = os.path.join(output_folder, f"stitched_image_{i:02d}.jpg")
         
         # 이미지 이어붙이기 및 저장
         stitch_images_horizontally(selected_image_paths, output_path)
-        print(f"{i}번째 결과 이미지가 저장되었습니다: {output_path}")
+        print(f"{i}번째 결과 이미지 저장 완료 → {output_path}")
 
 if __name__ == "__main__":
     main()
