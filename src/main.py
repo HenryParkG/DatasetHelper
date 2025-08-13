@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
+from tkinter import ttk
 import subprocess
 import sys
 import os
@@ -36,13 +37,10 @@ class ToolTip:
             self.tooltip_window = None
 # ──────────────────────────────
 
-
-# 현재 파일 기준 상대경로 계산 함수
 def get_script_path(relative_path):
     base_dir = os.path.dirname(os.path.abspath(__file__))
     return os.path.join(base_dir, relative_path)
 
-# 버튼 누르면 해당 스크립트를 별도 프로세스로 실행
 def run_script(script_path):
     python_exe = sys.executable
     try:
@@ -50,7 +48,6 @@ def run_script(script_path):
     except subprocess.CalledProcessError as e:
         messagebox.showerror("오류", f"스크립트 실행 실패:\n{e}")
 
-# 버튼 생성 함수 (툴팁 가능)
 def create_button(frame, text, script_relative_path, tooltip_text=None):
     script_path = get_script_path(script_relative_path)
     btn = tk.Button(frame, text=text, width=40, command=lambda: run_script(script_path))
@@ -59,47 +56,115 @@ def create_button(frame, text, script_relative_path, tooltip_text=None):
         ToolTip(btn, tooltip_text)
     return btn
 
+def create_scrollable_tab(notebook, tab_name):
+    frame_container = ttk.Frame(notebook)
+    canvas = tk.Canvas(frame_container)
+    scrollbar = ttk.Scrollbar(frame_container, orient="vertical", command=canvas.yview)
+    scroll_frame = ttk.Frame(canvas)
+
+    scroll_frame.bind(
+        "<Configure>",
+        lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+    )
+
+    canvas.create_window((0, 0), window=scroll_frame, anchor="nw")
+    canvas.configure(yscrollcommand=scrollbar.set)
+
+    canvas.pack(side="left", fill="both", expand=True)
+    scrollbar.pack(side="right", fill="y")
+
+    notebook.add(frame_container, text=tab_name)
+    return scroll_frame  # 여기다 버튼이나 라벨 넣기
 
 def main():
     root = tk.Tk()
     root.title("DatasetHelper Script Launcher")
     root.geometry("500x800")
+    root.resizable(False, False)
 
-    # changeAnnotation 폴더
-    frame1 = tk.LabelFrame(root, text="라벨 텍스트 변환", padx=10, pady=10)
-    frame1.pack(fill="x", padx=10, pady=5)
-    create_button(frame1, "Pascal VOC → YOLO 변환", "changeAnnotation/pascal_to_yolo.py", "Pascal VOC 형식 어노테이션을 YOLO 형식으로 변환")
-    create_button(frame1, "YOLO → Pascal VOC 변환", "changeAnnotation/yolo_to_pascal.py", "YOLO 형식 어노테이션을 Pascal VOC 형식으로 변환")
+    # Notebook 생성
+    notebook = ttk.Notebook(root)
+    notebook.pack(fill="both", expand=True)
 
-    # dataAugmentation 폴더
-    frame2 = tk.LabelFrame(root, text="데이터 증강", padx=10, pady=10)
-    frame2.pack(fill="x", padx=10, pady=5)
-    create_button(frame2, "밝기 및 대비 조정", "dataAugmentation/dataset_augmentation_brightness.py", "이미지 밝기와 대비를 조절")
-    create_button(frame2, "이미지 180도 회전", "dataAugmentation/dataset_augmentation_rotate.py", "이미지를 180도 회전")
-    create_button(frame2, "자르기", "dataAugmentation/dataset_augmentation_crop.py", "이미지 일부분을 잘라냄")
-    create_button(frame2, "흐림 추가", "dataAugmentation/dataset_augmentation_blur.py", "이미지에 블러(흐림) 효과 추가")
-    create_button(frame2, "뒤집기", "dataAugmentation/dataset_augmentation_flip.py", "이미지를 좌우 또는 상하 반전")
-    create_button(frame2, "노이즈 추가", "dataAugmentation/dataset_augmentation_noise.py", "이미지에 랜덤 노이즈 추가")
-    create_button(frame2, "이동", "dataAugmentation/dataset_augmentation_translate.py", "이미지를 좌표축 방향으로 이동")
+    # 각 탭 프레임
+    tab_annotation = ttk.Frame(notebook)
+    #tab_annotation = create_scrollable_tab(notebook, "라벨 변환")
 
-    # dataGenerator 폴더
-    frame3 = tk.LabelFrame(root, text="데이터 생성", padx=10, pady=10)
-    frame3.pack(fill="x", padx=10, pady=5)
-    create_button(frame3, "4열 분할 데이터 생성", "dataGenerator/dataset_generator_column_splitter.py", "데이터를 컬럼별로 나누어 생성")
-    create_button(frame3, "4열 데이터 1개의 이미지로 통합", "dataGenerator/dataset_generator_column_integrate.py", "컬럼별 데이터를 하나로 합침")
-    create_button(frame3, "라벨 생성", "dataGenerator/dataset_generator_label_text_creation.py", "데이터 라벨 텍스트 파일 생성")
+    tab_augmentation = ttk.Frame(notebook)
+    #tab_augmentation = create_scrollable_tab(notebook, "데이터 증강")
 
-    # spliter 폴더
-    frame4 = tk.LabelFrame(root, text="동영상 데이터 관리", padx=10, pady=10)
-    frame4.pack(fill="x", padx=10, pady=5)
-    create_button(frame4, "YOLO 분류용 데이터 분할", "spliter/dataset_spliter_yolo-cls.py", "YOLO 분류용 데이터셋을 학습/검증용으로 분할")
-    create_button(frame4, "YOLO 객체검출용 데이터 분할", "spliter/dataset_spliter_yolo-od.py", "YOLO 객체 검출용 데이터셋을 학습/검증용으로 분할")
+    tab_generator = ttk.Frame(notebook)
+    #tab_generator = create_scrollable_tab(notebook, "데이터 생성")
 
-    # video 폴더
-    frame5 = tk.LabelFrame(root, text="video", padx=10, pady=10)
-    frame5.pack(fill="x", padx=10, pady=5)
-    create_button(frame5, "FFmpeg 동영상 병합", "video/ffmpeg_merge_videos.py", "여러 동영상을 하나로 병합")
-    create_button(frame5, "FFmpeg 프레임 분할", "video/ffmpeg_frame_splitter.py", "동영상을 프레임 단위 이미지로 분할")
+    tab_spliter = ttk.Frame(notebook)
+    #tab_spliter = create_scrollable_tab(notebook, "데이터 분할")
+
+    tab_video = ttk.Frame(notebook)
+    #tab_video = create_scrollable_tab(notebook, "비디오 처리")
+
+    # 탭 추가
+    notebook.add(tab_annotation, text="라벨 변환")
+    notebook.add(tab_augmentation, text="데이터 증강")
+    notebook.add(tab_generator, text="데이터 생성")
+    notebook.add(tab_spliter, text="데이터 분할")
+    notebook.add(tab_video, text="비디오 처리")
+
+    # ───── 라벨 변환 탭 ─────
+    lf_format_conversion = ttk.LabelFrame(tab_annotation, text="포맷 변환", padding=10)
+    lf_format_conversion.pack(fill="x", padx=10, pady=5)
+    create_button(lf_format_conversion, "Pascal VOC → YOLO 변환", "changeAnnotation/pascal_to_yolo.py",
+                  "Pascal VOC 형식 어노테이션을 YOLO 형식으로 변환")
+    create_button(lf_format_conversion, "YOLO → Pascal VOC 변환", "changeAnnotation/yolo_to_pascal.py",
+                  "YOLO 형식 어노테이션을 Pascal VOC 형식으로 변환")
+
+    lf_other_conversion = ttk.LabelFrame(tab_annotation, text="기타 변환", padding=10)
+    lf_other_conversion.pack(fill="x", padx=10, pady=5)
+    create_button(lf_other_conversion, "COCO → YOLO 변환 (미구현)", "changeAnnotation/coco_to_yolo.py",
+                  "COCO 형식 어노테이션을 YOLO 형식으로 변환")
+    create_button(lf_other_conversion, "YOLO → COCO 변환 (미구현)", "changeAnnotation/yolo_to_coco.py",
+                  "YOLO 형식 어노테이션을 COCO 형식으로 변환")
+
+    # ───── 데이터 증강 탭 ─────
+    lf_basic_aug = ttk.LabelFrame(tab_augmentation, text="기본 증강", padding=10)
+    lf_basic_aug.pack(fill="x", padx=10, pady=5)
+    create_button(lf_basic_aug, "밝기 및 대비 조정", "dataAugmentation/dataset_augmentation_brightness.py", "이미지 밝기와 대비를 조절")
+    create_button(lf_basic_aug, "이미지 180도 회전", "dataAugmentation/dataset_augmentation_rotate.py", "이미지를 180도 회전")
+    create_button(lf_basic_aug, "자르기", "dataAugmentation/dataset_augmentation_crop.py", "이미지 일부분을 잘라냄")
+
+    lf_effects_aug = ttk.LabelFrame(tab_augmentation, text="효과 추가", padding=10)
+    lf_effects_aug.pack(fill="x", padx=10, pady=5)
+    create_button(lf_effects_aug, "흐림 추가", "dataAugmentation/dataset_augmentation_blur.py", "이미지에 블러(흐림) 효과 추가")
+    create_button(lf_effects_aug, "뒤집기", "dataAugmentation/dataset_augmentation_flip.py", "이미지를 좌우 또는 상하 반전")
+    create_button(lf_effects_aug, "노이즈 추가", "dataAugmentation/dataset_augmentation_noise.py", "이미지에 랜덤 노이즈 추가")
+    create_button(lf_effects_aug, "이동", "dataAugmentation/dataset_augmentation_translate.py", "이미지를 좌표축 방향으로 이동")
+
+    # ───── 데이터 생성 탭 ─────
+    lf_column_ops = ttk.LabelFrame(tab_generator, text="컬럼 작업", padding=10)
+    lf_column_ops.pack(fill="x", padx=10, pady=5)
+    create_button(lf_column_ops, "4열 분할 데이터 생성", "dataGenerator/dataset_generator_column_splitter.py", "데이터를 컬럼별로 나누어 생성")
+    create_button(lf_column_ops, "4열 데이터 1개의 이미지로 통합", "dataGenerator/dataset_generator_column_integrate.py", "컬럼별 데이터를 하나로 합침")
+
+    lf_label_ops = ttk.LabelFrame(tab_generator, text="라벨 작업", padding=10)
+    lf_label_ops.pack(fill="x", padx=10, pady=5)
+    create_button(lf_label_ops, "라벨 생성", "dataGenerator/dataset_generator_label_text_creation.py", "데이터 라벨 텍스트 파일 생성")
+
+    # ───── 데이터 분할 탭 ─────
+    lf_split_cls = ttk.LabelFrame(tab_spliter, text="분류용", padding=10)
+    lf_split_cls.pack(fill="x", padx=10, pady=5)
+    create_button(lf_split_cls, "YOLO 분류용 데이터 분할", "spliter/dataset_spliter_yolo-cls.py", "YOLO 분류용 데이터셋을 학습/검증용으로 분할")
+
+    lf_split_od = ttk.LabelFrame(tab_spliter, text="객체검출용", padding=10)
+    lf_split_od.pack(fill="x", padx=10, pady=5)
+    create_button(lf_split_od, "YOLO 객체검출용 데이터 분할", "spliter/dataset_spliter_yolo-od.py", "YOLO 객체 검출용 데이터셋을 학습/검증용으로 분할")
+
+    # ───── 비디오 처리 탭 ─────
+    lf_video_merge = ttk.LabelFrame(tab_video, text="동영상 병합", padding=10)
+    lf_video_merge.pack(fill="x", padx=10, pady=5)
+    create_button(lf_video_merge, "FFmpeg 동영상 병합", "video/ffmpeg_merge_videos.py", "여러 동영상을 하나로 병합")
+
+    lf_video_split = ttk.LabelFrame(tab_video, text="프레임 추출", padding=10)
+    lf_video_split.pack(fill="x", padx=10, pady=5)
+    create_button(lf_video_split, "FFmpeg 프레임 분할", "video/ffmpeg_frame_splitter.py", "동영상을 프레임 단위 이미지로 분할")
 
     # 하단 정보
     name_label = tk.Label(root, text="HenryParkG | GitHub: https://github.com/HenryParkG/DatasetHelper",
@@ -107,7 +172,6 @@ def main():
     name_label.pack(side="bottom", pady=10)
 
     root.mainloop()
-
 
 if __name__ == "__main__":
     main()
