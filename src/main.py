@@ -66,13 +66,13 @@ def main():
     root.geometry("500x800")
 
     # changeAnnotation 폴더
-    frame1 = tk.LabelFrame(root, text="changeAnnotation", padx=10, pady=10)
+    frame1 = tk.LabelFrame(root, text="라벨 텍스트 변환", padx=10, pady=10)
     frame1.pack(fill="x", padx=10, pady=5)
     create_button(frame1, "Pascal VOC → YOLO 변환", "changeAnnotation/pascal_to_yolo.py", "Pascal VOC 형식 어노테이션을 YOLO 형식으로 변환")
     create_button(frame1, "YOLO → Pascal VOC 변환", "changeAnnotation/yolo_to_pascal.py", "YOLO 형식 어노테이션을 Pascal VOC 형식으로 변환")
 
     # dataAugmentation 폴더
-    frame2 = tk.LabelFrame(root, text="dataAugmentation", padx=10, pady=10)
+    frame2 = tk.LabelFrame(root, text="데이터 증강", padx=10, pady=10)
     frame2.pack(fill="x", padx=10, pady=5)
     create_button(frame2, "밝기 및 대비 조정", "dataAugmentation/dataset_augmentation_brightness.py", "이미지 밝기와 대비를 조절")
     create_button(frame2, "이미지 180도 회전", "dataAugmentation/dataset_augmentation_rotate.py", "이미지를 180도 회전")
@@ -83,14 +83,14 @@ def main():
     create_button(frame2, "이동", "dataAugmentation/dataset_augmentation_translate.py", "이미지를 좌표축 방향으로 이동")
 
     # dataGenerator 폴더
-    frame3 = tk.LabelFrame(root, text="dataGenerator", padx=10, pady=10)
+    frame3 = tk.LabelFrame(root, text="데이터 생성", padx=10, pady=10)
     frame3.pack(fill="x", padx=10, pady=5)
-    create_button(frame3, "컬럼별 데이터 생성 분리", "dataGenerator/dataset_generator_column_splitter.py", "데이터를 컬럼별로 나누어 생성")
-    create_button(frame3, "컬럼별 데이터 생성 통합", "dataGenerator/dataset_generator_column_integrate.py", "컬럼별 데이터를 하나로 합침")
+    create_button(frame3, "4열 분할 데이터 생성", "dataGenerator/dataset_generator_column_splitter.py", "데이터를 컬럼별로 나누어 생성")
+    create_button(frame3, "4열 데이터 1개의 이미지로 통합", "dataGenerator/dataset_generator_column_integrate.py", "컬럼별 데이터를 하나로 합침")
     create_button(frame3, "라벨 생성", "dataGenerator/dataset_generator_label_text_creation.py", "데이터 라벨 텍스트 파일 생성")
 
     # spliter 폴더
-    frame4 = tk.LabelFrame(root, text="spliter", padx=10, pady=10)
+    frame4 = tk.LabelFrame(root, text="동영상 데이터 관리", padx=10, pady=10)
     frame4.pack(fill="x", padx=10, pady=5)
     create_button(frame4, "YOLO 분류용 데이터 분할", "spliter/dataset_spliter_yolo-cls.py", "YOLO 분류용 데이터셋을 학습/검증용으로 분할")
     create_button(frame4, "YOLO 객체검출용 데이터 분할", "spliter/dataset_spliter_yolo-od.py", "YOLO 객체 검출용 데이터셋을 학습/검증용으로 분할")
