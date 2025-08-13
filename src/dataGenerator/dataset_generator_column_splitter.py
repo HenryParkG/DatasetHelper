@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# 이미지 분할 스크립트: 이미지를 4열로 분할하여 저장
 import os
 from tkinter import Tk, filedialog
 from PIL import Image

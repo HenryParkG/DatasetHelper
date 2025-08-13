@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# YOLO 라벨 파일을 Pascal VOC XML 형식으로 변환하는 스크립트
 import os
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
