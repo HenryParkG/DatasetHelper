@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# 이미지 밝기 및 대비 조정 스크립트
 import cv2
 import os
 from glob import glob

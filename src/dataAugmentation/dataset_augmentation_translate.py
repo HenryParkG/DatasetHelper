@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# 이미지 이동 스크립트
 import os
 import cv2
 import numpy as np

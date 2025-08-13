@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# 이미지들을 가로로 이어붙이는 스크립트
 import os
 import random
 from tkinter import Tk, filedialog

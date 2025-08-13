@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# 이미지 180도 회전 스크립트
 import os
 import cv2
 from tkinter import Tk, filedialog

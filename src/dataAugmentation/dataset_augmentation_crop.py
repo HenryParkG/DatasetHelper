@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# 이미지 크롭 및 저장 스크립트
 import os
 from PIL import Image
 import tkinter as tk

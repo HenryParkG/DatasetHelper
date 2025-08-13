@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# 동영상 파일들을 합치는 스크립트
 import tkinter as tk
 from tkinter import filedialog, messagebox
 import subprocess

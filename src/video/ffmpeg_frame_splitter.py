@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# 비디오 파일에서 프레임을 추출하여 저장하는 스크립트
 import os
 import cv2
 import tkinter as tk
