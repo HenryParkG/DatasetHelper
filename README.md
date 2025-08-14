@@ -11,16 +11,17 @@ YOLO 학습을 위한 데이터 전처리부터 증강, 변환, 분할까지 전
 
 ## 🧩 구성 스크립트
 
-### 🔄 `changeAnnotation`
+### 🔄 `src/changeAnnotation`
 
 > **어노테이션 포맷을 전환**하는 스크립트입니다.
 
 - 예: Pascal VOC(XML) → YOLO(TXT), COCO(JSON) → YOLO 등
 - 클래스 파일 기준으로 매핑하여 자동 변환 가능
+- 선택한 폴더 내 모든 어노테이션 파일에 대해서 작업 수행 (프로그레스 추가 예정)
 
 ---
 
-### 🧪 `dataAugmentation`
+### 🧪 `src/dataAugmentation`
 
 > 이미지 데이터를 증강(Augmentation)하여 **데이터 다양성을 증가**시키는 스크립트입니다.
 
@@ -29,7 +30,7 @@ YOLO 학습을 위한 데이터 전처리부터 증강, 변환, 분할까지 전
 
 ---
 
-### 🖼️ `dataGenerator`
+### 🖼️ `src/dataGenerator`
 
 > **임의의 이미지 생성** 또는 샘플 데이터를 기반으로 **합성 이미지**를 자동 생성합니다.
 
@@ -38,7 +39,7 @@ YOLO 학습을 위한 데이터 전처리부터 증강, 변환, 분할까지 전
 
 ---
 
-### ✂️ `spliter`
+### ✂️ `src/spliter`
 
 > 라벨링된 데이터를 **YOLO 학습 포맷(train/val/test)** 으로 자동 분할 및 정리해주는 스크립트입니다.
 
