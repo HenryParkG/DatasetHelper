@@ -115,6 +115,7 @@ def main():
     notebook.add(tab_generator, text="데이터 생성")
     notebook.add(tab_spliter, text="데이터 분할")
     notebook.add(tab_video, text="비디오 처리")
+    notebook.add(tab_test, text="모델 테스트")
 
     # ───── 라벨 변환 탭 ─────
     lf_format_conversion = ttk.LabelFrame(tab_annotation, text="포맷 변환", padding=10)
@@ -191,7 +192,7 @@ def main():
     # ───── 테스트 탭 ─────
     lf_yolo_test = ttk.LabelFrame(tab_test, text="YOLO 모델 테스트", padding=10)
     lf_yolo_test.pack(fill="x", padx=10, pady=5)
-    create_button(lf_split_cls, "모델 테스트(미구현)", "test/yolo_model_test.py", "YOLO 분류용 데이터셋을 학습/검증용으로 분할")
+    create_button(lf_yolo_test, "모델 테스트(미구현)", "test/yolo_model_test.py", "YOLO 분류용 데이터셋을 학습/검증용으로 분할")
 
     # ──────────────────────────
     # 하단 정보

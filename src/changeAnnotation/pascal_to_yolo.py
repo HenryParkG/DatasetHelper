@@ -2,7 +2,7 @@
 # Pascal VOC 형식의 XML 라벨을 YOLO 형식의 텍스트 파일로 변환하는 스크립트
 import os
 import xml.etree.ElementTree as ET
-from tkinter import Tk, filedialog
+from tkinter import Tk, filedialog, messagebox
 
 # Tkinter 초기화 (창 숨김)
 root = Tk()
@@ -12,13 +12,13 @@ root.withdraw()
 print("VOC XML 라벨 폴더를 선택하세요.")
 xml_folder = filedialog.askdirectory(title="VOC XML 라벨 폴더 선택")
 if not xml_folder:
-    print("❌ 라벨 폴더를 선택하지 않았습니다. 종료합니다.")
+    messagebox.showerror("오류", "라벨 폴더를 선택하지 않았습니다.")
     exit()
 
 print("YOLO 라벨(.txt) 저장 폴더를 선택하세요.")
 output_folder = filedialog.askdirectory(title="YOLO 라벨 저장 폴더 선택")
 if not output_folder:
-    print("❌ 저장 폴더를 선택하지 않았습니다. 종료합니다.")
+    messagebox.showerror("오류", "저장 폴더를 선택하지 않았습니다.")
     exit()
 
 # 클래스 목록 정의 (VOC에 나오는 클래스 순서 중요)
