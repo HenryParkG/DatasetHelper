@@ -76,6 +76,20 @@ def create_scrollable_tab(notebook, tab_name):
     notebook.add(frame_container, text=tab_name)
     return scroll_frame  # 여기다 버튼이나 라벨 넣기
 
+def check_ffmpeg(canvas, circle_id):
+    try:
+        result = subprocess.run(["ffmpeg", "-version"], capture_output=True, text=True, check=True)
+        version_line = result.stdout.splitlines()[0]
+        canvas.itemconfig(circle_id, fill="green")
+        messagebox.showinfo("FFmpeg 확인", f"FFmpeg 설치됨!\n{version_line}")
+    except FileNotFoundError:
+        canvas.itemconfig(circle_id, fill="red")
+        messagebox.showerror("FFmpeg 확인", "FFmpeg이 설치되어 있지 않습니다.")
+    except subprocess.CalledProcessError:
+        canvas.itemconfig(circle_id, fill="red")
+        messagebox.showerror("FFmpeg 확인", "FFmpeg 실행 중 오류가 발생했습니다.")
+
+        
 def main():
     root = tk.Tk()
     root.title("DatasetHelper Script Launcher")
@@ -147,6 +161,7 @@ def main():
     lf_label_ops = ttk.LabelFrame(tab_generator, text="라벨 작업", padding=10)
     lf_label_ops.pack(fill="x", padx=10, pady=5)
     create_button(lf_label_ops, "라벨 생성", "dataGenerator/dataset_generator_label_text_creation.py", "데이터 라벨 텍스트 파일 생성")
+    create_button(lf_label_ops, "라벨링(프로토)", "dataGenerator/dataset_labeler.py", "데이터 라벨링 웹 UI")
 
     # ───── 데이터 분할 탭 ─────
     lf_split_cls = ttk.LabelFrame(tab_spliter, text="분류용", padding=10)
@@ -166,10 +181,29 @@ def main():
     lf_video_split.pack(fill="x", padx=10, pady=5)
     create_button(lf_video_split, "FFmpeg 프레임 분할", "video/ffmpeg_frame_splitter.py", "동영상을 프레임 단위 이미지로 분할")
 
+
+    # video 탭 안에서 FFmpeg 확인 버튼 + 상태 원
+    frame_ffmpeg = tk.Frame(tab_video)
+    frame_ffmpeg.pack(pady=5, padx=5, anchor="w")  # 왼쪽 정렬
+
+    btn_check = tk.Button(frame_ffmpeg, text="FFmpeg 설치 확인",
+                        command=lambda: check_ffmpeg(status_canvas, status_circle))
+    btn_check.pack(side="left", padx=10)
+
+    # 상태 표시용 Canvas
+    status_canvas = tk.Canvas(frame_ffmpeg, width=20, height=20, highlightthickness=0)
+    status_canvas.pack(side="left")
+    status_circle = status_canvas.create_oval(2, 2, 18, 18, fill="gray")  # 초기 상태: 회색
+    
+    # ──────────────────────────
     # 하단 정보
+    version_lavel = tk.Label(root, text="Version 1.0.0",
+                          font=("Arial", 10, "italic"), fg="gray")
+    version_lavel.pack(side="bottom", pady=2)
+
     name_label = tk.Label(root, text="HenryParkG | GitHub: https://github.com/HenryParkG/DatasetHelper",
                           font=("Arial", 10, "italic"), fg="gray")
-    name_label.pack(side="bottom", pady=10)
+    name_label.pack(side="bottom", pady=2)
 
     root.mainloop()
 
