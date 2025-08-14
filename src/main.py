@@ -133,9 +133,9 @@ def main():
 
     lf_other_conversion = ttk.LabelFrame(tab_annotation, text="기타 변환", padding=10)
     lf_other_conversion.pack(fill="x", padx=10, pady=5)
-    create_button(lf_other_conversion, "COCO → YOLO 변환 (미구현)", "changeAnnotation/coco_to_yolo.py",
+    create_button(lf_other_conversion, "COCO → YOLO 변환 (테스트 필요)", "changeAnnotation/coco_to_yolo.py",
                   "COCO 형식 어노테이션을 YOLO 형식으로 변환")
-    create_button(lf_other_conversion, "YOLO → COCO 변환 (미구현)", "changeAnnotation/yolo_to_coco.py",
+    create_button(lf_other_conversion, "YOLO → COCO 변환 (테스트 필요)", "changeAnnotation/yolo_to_coco.py",
                   "YOLO 형식 어노테이션을 COCO 형식으로 변환")
 
     # ───── 데이터 증강 탭 ─────
