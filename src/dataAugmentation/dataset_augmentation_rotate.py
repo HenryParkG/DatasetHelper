@@ -2,7 +2,7 @@
 # 이미지 180도 회전 스크립트
 import os
 import cv2
-from tkinter import Tk, filedialog
+from tkinter import Tk, filedialog, messagebox
 
 def rotate_images_180_in_place(input_dir):
     image_files = [f for f in os.listdir(input_dir)
@@ -36,4 +36,5 @@ input_folder = filedialog.askdirectory(title="이미지 폴더 선택")
 if input_folder:
     rotate_images_180_in_place(input_folder)
 else:
-    print("폴더가 선택되지 않았습니다.")
+    messagebox.showerror("오류", "저장 이미지 폴더를 선택하지 않았습니다.")
+    exit()

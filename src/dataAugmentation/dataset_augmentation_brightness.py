@@ -3,7 +3,7 @@
 import cv2
 import os
 from glob import glob
-from tkinter import Tk, filedialog
+from tkinter import Tk, filedialog, messagebox
 
 def adjust_brightness_contrast(image, alpha=1.0, beta=0):
     """
@@ -39,9 +39,14 @@ root.withdraw()
 
 print("이미지 폴더를 선택하세요.")
 folder = filedialog.askdirectory(title="이미지 폴더 선택")
+if not folder:
+    messagebox.showerror("오류", "입력 이미지 폴더를 선택하지 않았습니다.")
+    exit()
 
 if folder:
     # 필요에 따라 alpha, beta 값 변경
     process_images_in_folder(folder, prefix='bright_', alpha=1.0, beta=50)
 else:
     print("폴더가 선택되지 않았습니다.")
+    exit()
+

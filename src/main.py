@@ -127,9 +127,9 @@ def main():
 
     lf_other_conversion = ttk.LabelFrame(tab_annotation, text="기타 변환", padding=10)
     lf_other_conversion.pack(fill="x", padx=10, pady=5)
-    create_button(lf_other_conversion, "COCO → YOLO 변환 (테스트 필요)", "changeAnnotation/coco_to_yolo.py",
+    create_button(lf_other_conversion, "COCO → YOLO 변환", "changeAnnotation/coco_to_yolo.py",
                   "COCO 형식 어노테이션을 YOLO 형식으로 변환")
-    create_button(lf_other_conversion, "YOLO → COCO 변환 (테스트 필요)", "changeAnnotation/yolo_to_coco.py",
+    create_button(lf_other_conversion, "YOLO → COCO 변환", "changeAnnotation/yolo_to_coco.py",
                   "YOLO 형식 어노테이션을 COCO 형식으로 변환")
 
     # ───── 데이터 증강 탭 ─────
@@ -192,7 +192,7 @@ def main():
     # ───── 테스트 탭 ─────
     lf_yolo_test = ttk.LabelFrame(tab_test, text="YOLO 모델 테스트", padding=10)
     lf_yolo_test.pack(fill="x", padx=10, pady=5)
-    create_button(lf_yolo_test, "모델 테스트(미구현)", "test/yolo_model_test.py", "YOLO 분류용 데이터셋을 학습/검증용으로 분할")
+    create_button(lf_yolo_test, "모델 테스트", "test/yolo_model_test.py", "YOLO 분류용 데이터셋을 학습/검증용으로 분할")
 
     # ──────────────────────────
     # 하단 정보

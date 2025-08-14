@@ -30,7 +30,7 @@ def main():
     )
     if not file_paths:
         messagebox.showwarning("경고", "파일을 선택하지 않았습니다.")
-        return
+        exit()
 
     # 2. input.txt 저장할 위치 및 이름 지정
     concat_txt_path = filedialog.asksaveasfilename(
@@ -50,7 +50,7 @@ def main():
     )
     if not output_path:
         messagebox.showwarning("경고", "출력 동영상 파일명을 선택하지 않았습니다.")
-        return
+        exit()
 
     # 4. concat 텍스트 파일 생성
     create_concat_file(file_paths, concat_txt_path)

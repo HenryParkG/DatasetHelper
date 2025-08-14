@@ -2,8 +2,11 @@
 # 이미지들을 가로로 이어붙이는 스크립트
 import os
 import random
-from tkinter import Tk, filedialog
+from tkinter import Tk, filedialog, messagebox
 from PIL import Image
+
+
+
 
 def select_folder(prompt):
     """파일 탐색기를 열어 폴더를 선택하도록 함."""
@@ -38,29 +41,33 @@ def main():
     # 입력 폴더 선택
     input_folder = select_folder("이미지가 있는 폴더를 선택하세요")
     if not input_folder:
+        messagebox.showerror("오류", "입력 이미지 폴더를 선택하지 않았습니다.")
         print("입력 폴더를 선택하지 않았습니다. 프로그램을 종료합니다.")
-        return
+        exit()
     
     # 저장 폴더 선택
     output_folder = select_folder("결과 이미지를 저장할 폴더를 선택하세요")
     if not output_folder:
+        messagebox.showerror("오류", "저장 이미지 폴더를 선택하지 않았습니다.")
         print("저장 폴더를 선택하지 않았습니다. 프로그램을 종료합니다.")
-        return
+        exit()
     
     # 입력 폴더에서 이미지 파일 가져오기
     image_extensions = (".jpg", ".jpeg", ".png", ".bmp", ".gif")
     image_files = [f for f in os.listdir(input_folder) if f.lower().endswith(image_extensions)]
     
     if len(image_files) < 4:
+        messagebox.showerror("오류", "이미지가 4개 이상 있어야 합니다. 프로그램을 종료합니다.")
         print("이미지가 4개 이상 있어야 합니다. 프로그램을 종료합니다.")
-        return
+        exit()
     
     # 반복 횟수 입력 받기
     try:
-        repeat_count = int(input("몇 장의 결과 이미지를 만들까요? (예: 20) : "))
+        repeat_count = 5
     except ValueError:
+        messagebox.showerror("오류", "숫자를 입력해야 합니다. 프로그램을 종료합니다.")
         print("숫자를 입력해야 합니다. 프로그램을 종료합니다.")
-        return
+        exit()
     
     for i in range(1, repeat_count + 1):
         # 랜덤으로 4개의 이미지 선택

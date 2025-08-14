@@ -3,7 +3,7 @@
 import os
 import cv2
 import numpy as np
-from tkinter import Tk, filedialog
+from tkinter import Tk, filedialog, messagebox
 
 def translate_images(input_dir, output_dir, x_shift=50, y_shift=50):
     os.makedirs(output_dir, exist_ok=True)
@@ -28,6 +28,11 @@ if __name__ == "__main__":
     root = Tk()
     root.withdraw()
     input_dir = filedialog.askdirectory(title="원본 이미지 폴더 선택")
+    if input_dir is None:
+        messagebox.showerror("오류", "입력 이미지 폴더를 선택하지 않았습니다.")
+        exit()    
     output_dir = filedialog.askdirectory(title="결과 저장 폴더 선택")
-
+    if output_dir is None:
+        messagebox.showerror("오류", "저장 이미지 폴더를 선택하지 않았습니다.")
+        exit()
     translate_images(input_dir, output_dir)

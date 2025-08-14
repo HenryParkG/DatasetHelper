@@ -41,22 +41,22 @@ def main():
     input_dir = filedialog.askdirectory(title="크롭할 이미지 폴더 선택")
     if not input_dir:
         messagebox.showerror("오류", "입력 폴더가 선택되지 않았습니다.")
-        return
+        exit()
 
     output_dir = filedialog.askdirectory(title="크롭 결과 저장 폴더 선택")
     if not output_dir:
         messagebox.showerror("오류", "출력 폴더가 선택되지 않았습니다.")
-        return
+        exit()
 
     crop_w = simpledialog.askinteger("크롭 너비", "크롭 너비 입력 (예: 256):", minvalue=1)
     if crop_w is None:
         messagebox.showerror("오류", "크롭 너비를 입력해야 합니다.")
-        return
+        exit()
 
     crop_h = simpledialog.askinteger("크롭 높이", "크롭 높이 입력 (예: 256):", minvalue=1)
     if crop_h is None:
         messagebox.showerror("오류", "크롭 높이를 입력해야 합니다.")
-        return
+        exit()
 
     overlap_px = simpledialog.askinteger("겹침 영역", "겹치는 영역 픽셀 수 입력 (기본 0):", minvalue=0)
     if overlap_px is None:
