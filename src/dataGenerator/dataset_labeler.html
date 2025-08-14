@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>YOLO Labeling Tool</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; }
+  #canvas-container { position: relative; border: 1px solid #ccc; display: inline-block; }
+  canvas { background: #f8f8f8; }
+  #controls { margin-bottom: 10px; }
+  .label-box { position: absolute; border: 2px solid red; pointer-events: none; }
+</style>
+</head>
+<body>
+
+<h2>YOLO Labeling Tool</h2>
+
+<div id="controls">
+  <input type="file" id="file-input" accept="image/*">
+  <select id="class-select">
+    <option value="0">Class 0</option>
+    <option value="1">Class 1</option>
+    <option value="2">Class 2</option>
+  </select>
+  <button id="download-btn">Download YOLO TXT</button>
+</div>
+
+<div id="canvas-container">
+  <canvas id="canvas"></canvas>
+</div>
+
+<script>
+const fileInput = document.getElementById('file-input');
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const classSelect = document.getElementById('class-select');
+let image = new Image();
+let boxes = [];
+let startX, startY, drawing=false;
+
+fileInput.addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = evt => {
+    image.src = evt.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+
+image.onload = () => {
+  canvas.width = image.width;
+  canvas.height = image.height;
+  ctx.drawImage(image, 0, 0);
+  boxes = [];
+};
+
+canvas.addEventListener('mousedown', e => {
+  const rect = canvas.getBoundingClientRect();
+  startX = e.clientX - rect.left;
+  startY = e.clientY - rect.top;
+  drawing = true;
+});
+
+canvas.addEventListener('mousemove', e => {
+  if (!drawing) return;
+  const rect = canvas.getBoundingClientRect();
+  const mouseX = e.clientX - rect.left;
+  const mouseY = e.clientY - rect.top;
+  redrawCanvas();
+  ctx.strokeStyle = 'red';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(startX, startY, mouseX-startX, mouseY-startY);
+});
+
+canvas.addEventListener('mouseup', e => {
+  if (!drawing) return;
+  const rect = canvas.getBoundingClientRect();
+  const endX = e.clientX - rect.left;
+  const endY = e.clientY - rect.top;
+  boxes.push({
+    x1: startX, y1: startY,
+    x2: endX, y2: endY,
+    classId: classSelect.value
+  });
+  drawing = false;
+  redrawCanvas();
+});
+
+function redrawCanvas() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(image, 0, 0);
+  ctx.strokeStyle = 'red';
+  ctx.lineWidth = 2;
+  boxes.forEach(box => {
+    const x = Math.min(box.x1, box.x2);
+    const y = Math.min(box.y1, box.y2);
+    const w = Math.abs(box.x2 - box.x1);
+    const h = Math.abs(box.y2 - box.y1);
+    ctx.strokeRect(x, y, w, h);
+  });
+}
+
+document.getElementById('download-btn').addEventListener('click', () => {
+  if (!boxes.length) return alert("No boxes!");
+  const lines = boxes.map(box => {
+    const x = (Math.min(box.x1, box.x2) + Math.abs(box.x2-box.x1)/2)/canvas.width;
+    const y = (Math.min(box.y1, box.y2) + Math.abs(box.y2-box.y1)/2)/canvas.height;
+    const w = Math.abs(box.x2-box.x1)/canvas.width;
+    const h = Math.abs(box.y2-box.y1)/canvas.height;
+    return `${box.classId} ${x.toFixed(6)} ${y.toFixed(6)} ${w.toFixed(6)} ${h.toFixed(6)}`;
+  });
+  const blob = new Blob([lines.join('\n')], {type: 'text/plain'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'labels.txt';
+  a.click();
+});
+</script>
+
+</body>
+</html>
