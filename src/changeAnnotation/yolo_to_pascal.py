@@ -3,7 +3,7 @@
 import os
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
-from tkinter import Tk, filedialog
+from tkinter import Tk, filedialog, messagebox
 import cv2
 
 # Tkinter 초기화 (창 숨김)
@@ -14,19 +14,19 @@ root.withdraw()
 print("YOLO 라벨(.txt) 폴더를 선택하세요.")
 yolo_folder = filedialog.askdirectory(title="YOLO 라벨 폴더 선택")
 if not yolo_folder:
-    print("라벨 폴더를 선택하지 않았습니다. 종료합니다.")
+    messagebox.showerror("오류", "라벨 폴더를 선택하지 않았습니다.")
     exit()
 
 print("이미지 폴더를 선택하세요.")
 image_folder = filedialog.askdirectory(title="이미지 폴더 선택")
 if not image_folder:
-    print("이미지 폴더를 선택하지 않았습니다. 종료합니다.")
+    messagebox.showerror("오류", "이미지 폴더를 선택하지 않았습니다.")
     exit()
 
 print("Pascal VOC XML 저장 폴더를 선택하세요.")
 output_folder = filedialog.askdirectory(title="XML 저장 폴더 선택")
 if not output_folder:
-    print("저장 폴더를 선택하지 않았습니다. 종료합니다.")
+    messagebox.showerror("오류", "저장할 폴더를 선택하지 않았습니다.")
     exit()
 
 # 클래스 목록 (YOLO 라벨 순서와 동일해야 함)
