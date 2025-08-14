@@ -102,19 +102,12 @@ def main():
 
     # 각 탭 프레임
     tab_annotation = ttk.Frame(notebook)
-    #tab_annotation = create_scrollable_tab(notebook, "라벨 변환")
-
     tab_augmentation = ttk.Frame(notebook)
-    #tab_augmentation = create_scrollable_tab(notebook, "데이터 증강")
-
     tab_generator = ttk.Frame(notebook)
-    #tab_generator = create_scrollable_tab(notebook, "데이터 생성")
-
     tab_spliter = ttk.Frame(notebook)
-    #tab_spliter = create_scrollable_tab(notebook, "데이터 분할")
-
     tab_video = ttk.Frame(notebook)
-    #tab_video = create_scrollable_tab(notebook, "비디오 처리")
+    tab_test = ttk.Frame(notebook)
+
 
     # 탭 추가
     notebook.add(tab_annotation, text="라벨 변환")
@@ -195,6 +188,11 @@ def main():
     status_canvas.pack(side="left")
     status_circle = status_canvas.create_oval(2, 2, 18, 18, fill="gray")  # 초기 상태: 회색
     
+    # ───── 테스트 탭 ─────
+    lf_yolo_test = ttk.LabelFrame(tab_test, text="YOLO 모델 테스트", padding=10)
+    lf_yolo_test.pack(fill="x", padx=10, pady=5)
+    create_button(lf_split_cls, "모델 테스트(미구현)", "test/yolo_model_test.py", "YOLO 분류용 데이터셋을 학습/검증용으로 분할")
+
     # ──────────────────────────
     # 하단 정보
     version_lavel = tk.Label(root, text="Version 1.0.0",
