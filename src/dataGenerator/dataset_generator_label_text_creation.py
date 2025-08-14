@@ -4,7 +4,7 @@ import os
 import cv2
 from pathlib import Path
 from ultralytics import YOLO
-from tkinter import Tk, filedialog
+from tkinter import Tk, filedialog, messagebox
 
 # Tkinter 초기화 (창 숨김)
 root = Tk()
@@ -13,13 +13,25 @@ root.withdraw()
 # 폴더 / 파일 선택
 print("이미지 폴더를 선택하세요.")
 image_dir = filedialog.askdirectory(title="이미지 폴더 선택")
-
+if not image_dir:
+    messagebox.showerror("오류", "입력 이미지 폴더를 선택하지 않았습니다.")
+    print("입력 폴더를 선택하지 않았습니다. 종료합니다.")
+    exit()
+    
 print("라벨 저장 폴더를 선택하세요.")
 output_dir = filedialog.askdirectory(title="라벨 저장 폴더 선택")
+if not output_dir:
+    messagebox.showerror("오류", "저장 이미지 폴더를 선택하지 않았습니다.")
+    print("저장 폴더를 선택하지 않았습니다. 종료합니다.")
+    exit()
 
 print("YOLO 모델 파일(.pt)을 선택하세요.")
 model_path = filedialog.askopenfilename(title="YOLO 모델 파일 선택", filetypes=[("PyTorch Model", "*.pt")])
-
+if not model_path:
+    messagebox.showerror("오류", "모델 파일을 선택하지 않았습니다.")
+    print("모델 파일를 선택하지 않았습니다. 종료합니다.")
+    exit()
+    
 # 파라미터 설정
 img_size = 640
 conf_thres = 0.68

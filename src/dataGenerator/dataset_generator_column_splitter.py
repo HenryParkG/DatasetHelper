@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # 이미지 분할 스크립트: 이미지를 4열로 분할하여 저장
 import os
-from tkinter import Tk, filedialog
+from tkinter import Tk, filedialog, messagebox
 from PIL import Image
 
 def select_folder(prompt):
@@ -32,22 +32,25 @@ def main():
     # 입력 폴더 선택
     input_folder = select_folder("분할할 이미지들이 있는 폴더를 선택하세요")
     if not input_folder:
+        messagebox.showerror("오류", "입력 이미지 폴더를 선택하지 않았습니다.")
         print("입력 폴더를 선택하지 않았습니다. 종료합니다.")
-        return
+        exit()
 
     # 저장 폴더 선택
     output_folder = select_folder("결과 이미지를 저장할 폴더를 선택하세요")
     if not output_folder:
+        messagebox.showerror("오류", "저장 이미지 폴더를 선택하지 않았습니다.")
         print("저장 폴더를 선택하지 않았습니다. 종료합니다.")
-        return
+        exit()
 
     # 이미지 파일 목록 가져오기
     image_extensions = (".jpg", ".jpeg", ".png", ".bmp", ".gif")
     image_files = [f for f in os.listdir(input_folder) if f.lower().endswith(image_extensions)]
 
     if not image_files:
+        messagebox.showerror("오류", "저장 이미지 폴더를 선택하지 않았습니다.")
         print("이미지 파일이 없습니다.")
-        return
+        exit()
 
     # 각 이미지에 대해 4열로 분할 저장
     for img_file in image_files:

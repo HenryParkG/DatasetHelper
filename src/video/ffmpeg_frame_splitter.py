@@ -3,7 +3,7 @@
 import os
 import cv2
 import tkinter as tk
-from tkinter import filedialog
+from tkinter import filedialog, messagebox
 
 # Tkinter 기본창 숨김
 root = tk.Tk()
@@ -13,14 +13,14 @@ root.withdraw()
 print("원본 영상이 있는 폴더를 선택하세요.")
 input_dir = filedialog.askdirectory(title="원본 영상 폴더 선택")
 if not input_dir:
-    print("원본 영상 폴더를 선택하지 않았습니다. 종료합니다.")
+    messagebox.showerror("에러", "원본 영상 폴더를 선택하지 않았습니다.")
     exit()
 
 # 2. 저장 경로 선택
 print("프레임을 저장할 폴더를 선택하세요.")
 save_dir = filedialog.askdirectory(title="프레임 저장할 폴더 선택")
 if not save_dir:
-    print("저장 경로를 선택하지 않았습니다. 종료합니다.")
+    messagebox.showerror("에러", "저장 경로를 선택하지 않았습니다.")
     exit()
 
 # 3. FPS 설정

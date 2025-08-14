@@ -20,12 +20,12 @@ def run_detection():
     model_path = select_model_file()
     if not model_path:
         messagebox.showerror("에러", "모델 파일을 선택해주세요.")
-        return
+        exit()
 
     dataset_path = select_dataset_folder()
     if not dataset_path:
         messagebox.showerror("에러", "테스트 데이터셋 폴더를 선택해주세요.")
-        return
+        exit()
 
     # 이미지 파일 목록
     image_files = glob.glob(os.path.join(dataset_path, "*.jpg")) + \
@@ -34,7 +34,7 @@ def run_detection():
 
     if not image_files:
         messagebox.showerror("에러", "데이터셋 폴더에 이미지가 없습니다.")
-        return
+        exit()
 
     result_folder = os.path.join(dataset_path, "result")
     os.makedirs(result_folder, exist_ok=True)
