@@ -47,3 +47,13 @@ YOLO 학습을 위한 데이터 전처리부터 증강, 변환, 분할까지 전
 - `.txt` 라벨 파일도 함께 이동
 
 ---
+
+
+### Installation
+
+1. Git clone
+2. ffmpeg 설치 (선택)
+3. pip install -r requirements.txt
+4. python main.py (Visual Studio 등)
+
+
