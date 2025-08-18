@@ -52,8 +52,8 @@ YOLO 학습을 위한 데이터 전처리부터 증강, 변환, 분할까지 전
 ### Installation
 
 1. Git clone
-2. ffmpeg 설치 (선택)
+2. ffmpeg 설치 (선택 - 동영상 분할과 같은 기능을 사용하고자 할 때)
 3. pip install -r requirements.txt
-4. python main.py (Visual Studio 등)
+4. python main.py (Visual Studio 등 파이썬 실행 가능 Prompt에서)
 
 
