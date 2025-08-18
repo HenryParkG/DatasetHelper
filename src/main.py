@@ -207,4 +207,8 @@ def main():
     root.mainloop()
 
 if __name__ == "__main__":
-    main()
+    #main()
+    import multiprocessing
+    multiprocessing.freeze_support()  # pyinstaller exe 실행 시 필요
+    app = main()  # tkinter 윈도우 실행
+    app.mainloop()
