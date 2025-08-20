@@ -4,6 +4,7 @@ from tkinter import ttk
 import subprocess
 import sys
 import os
+import importlib.util
 
 # ──────────────────────────────
 # 툴팁 기능 클래스
@@ -88,6 +89,23 @@ def check_ffmpeg(canvas, circle_id):
     except subprocess.CalledProcessError:
         canvas.itemconfig(circle_id, fill="red")
         messagebox.showerror("FFmpeg 확인", "FFmpeg 실행 중 오류가 발생했습니다.")
+        
+def check_ultralytics(status_canvas, status_circle):
+    """
+    ultralytics 설치 여부 확인 후 상태 원 색상 변경
+    """
+    try:
+        if importlib.util.find_spec("ultralytics") is not None:
+            # 설치됨 → 초록색
+            status_canvas.itemconfig(status_circle, fill="green")
+            messagebox.showinfo("확인", "ultralytics가 설치되어 있습니다.")
+        else:
+            # 설치 안됨 → 빨간색
+            status_canvas.itemconfig(status_circle, fill="red")
+            messagebox.showwarning("확인", "ultralytics가 설치되어 있지 않습니다.")
+    except Exception as e:
+        status_canvas.itemconfig(status_circle, fill="red")
+        messagebox.showerror("오류", f"확인 중 오류 발생:\n{e}")
 
         
 def main():
@@ -167,14 +185,17 @@ def main():
     create_button(lf_split_od, "YOLO 객체검출용 데이터 분할", "spliter/dataset_spliter_yolo-od.py", "YOLO 객체 검출용 데이터셋을 학습/검증용으로 분할")
 
     # ───── 비디오 처리 탭 ─────
-    lf_video_merge = ttk.LabelFrame(tab_video, text="동영상 병합", padding=10)
+    lf_video_merge = ttk.LabelFrame(tab_video, text="동영상+동영상 -> 동영상", padding=10)
     lf_video_merge.pack(fill="x", padx=10, pady=5)
     create_button(lf_video_merge, "FFmpeg 동영상 병합", "video/ffmpeg_merge_videos.py", "여러 동영상을 하나로 병합")
 
-    lf_video_split = ttk.LabelFrame(tab_video, text="프레임 추출", padding=10)
+    lf_video_split = ttk.LabelFrame(tab_video, text="동영상 -> 이미지", padding=10)
     lf_video_split.pack(fill="x", padx=10, pady=5)
     create_button(lf_video_split, "FFmpeg 프레임 분할", "video/ffmpeg_frame_splitter.py", "동영상을 프레임 단위 이미지로 분할")
-
+    
+    lf_image_merge = ttk.LabelFrame(tab_video, text="이미지+이미지 -> 동영상", padding=10)
+    lf_image_merge.pack(fill="x", padx=10, pady=5)
+    create_button(lf_image_merge, "FFmpeg 프레임 병합", "video/ffmpeg_frame_merge.py", "이미지를 병합하여 하나의 동영상으로 생성")
 
     # video 탭 안에서 FFmpeg 확인 버튼 + 상태 원
     frame_ffmpeg = tk.Frame(tab_video)
@@ -193,6 +214,17 @@ def main():
     lf_yolo_test = ttk.LabelFrame(tab_test, text="YOLO 모델 테스트", padding=10)
     lf_yolo_test.pack(fill="x", padx=10, pady=5)
     create_button(lf_yolo_test, "모델 테스트", "test/yolo_model_test.py", "YOLO 분류용 데이터셋을 학습/검증용으로 분할")
+
+    frame_ultralytics = tk.Frame(tab_test)
+    frame_ultralytics.pack(pady=5, padx=5, anchor="w")
+
+    btn_check_ultra = tk.Button(frame_ultralytics, text="Ultralytics 설치 확인",
+                                command=lambda: check_ultralytics(ultra_canvas, ultra_circle))
+    btn_check_ultra.pack(side="left", padx=10)
+    
+    ultra_canvas = tk.Canvas(frame_ultralytics, width=20, height=20, highlightthickness=0)
+    ultra_canvas.pack(side="left")
+    ultra_circle = ultra_canvas.create_oval(2, 2, 18, 18, fill="gray")  # ultralytics 상태 원
 
     # ──────────────────────────
     # 하단 정보
