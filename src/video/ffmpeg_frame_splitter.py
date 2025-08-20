@@ -24,7 +24,7 @@ if not save_dir:
     exit()
 
 # 3. FPS 설정
-target_fps = 10
+target_fps = 5
 
 # 4. .webm 파일 순회
 for file_name in os.listdir(input_dir):
