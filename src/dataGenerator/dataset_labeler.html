@@ -6,9 +6,18 @@
 <style>
   body { font-family: Arial, sans-serif; margin: 20px; }
   #canvas-container { position: relative; border: 1px solid #ccc; display: inline-block; }
-  canvas { background: #f8f8f8; }
-  #controls { margin-bottom: 10px; }
-  .label-box { position: absolute; border: 2px solid red; pointer-events: none; }
+  canvas { background: #f8f8f8; cursor: crosshair; }
+  #controls { margin-bottom: 10px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  button { padding: 5px 10px; background: #007bff; color: white; border: none; cursor: pointer; }
+  button:hover { background: #0056b3; }
+  button:disabled { background: #ccc; cursor: not-allowed; }
+  input, select { padding: 5px; }
+  #status { margin-left: auto; font-weight: bold; }
+  #box-list, #class-list { margin-top: 10px; max-height: 200px; overflow-y: auto; }
+  #box-list div, #class-list div { margin-bottom: 5px; display: flex; align-items: center; }
+  #box-list button, #class-list button { margin-left: 10px; font-size: 12px; background: #dc3545; }
+  #box-list button:hover, #class-list button:hover { background: #c82333; }
+  #class-controls { display: flex; gap: 5px; }
 </style>
 </head>
 <body>
@@ -16,46 +25,173 @@
 <h2>YOLO Labeling Tool</h2>
 
 <div id="controls">
-  <input type="file" id="file-input" accept="image/*">
-  <select id="class-select">
-    <option value="0">Class 0</option>
-    <option value="1">Class 1</option>
-    <option value="2">Class 2</option>
-  </select>
+  <input type="file" id="file-input" accept="image/*" multiple>
+  <button id="prev-btn" disabled>Previous</button>
+  <button id="next-btn" disabled>Next</button>
+  <div id="class-controls">
+    <select id="class-select"></select>
+    <input type="text" id="new-class" placeholder="New class name">
+    <button id="add-class-btn">Add Class</button>
+  </div>
+  <button id="undo-btn">Undo</button>
+  <button id="clear-btn">Clear All</button>
   <button id="download-btn">Download YOLO TXT</button>
+  <span id="status"></span>
 </div>
 
 <div id="canvas-container">
   <canvas id="canvas"></canvas>
 </div>
 
+<div id="box-list"></div>
+<div id="class-list"></div>
+
 <script>
 const fileInput = document.getElementById('file-input');
+const prevBtn = document.getElementById('prev-btn');
+const nextBtn = document.getElementById('next-btn');
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const classSelect = document.getElementById('class-select');
-let image = new Image();
-let boxes = [];
-let startX, startY, drawing=false;
+const newClassInput = document.getElementById('new-class');
+const addClassBtn = document.getElementById('add-class-btn');
+const undoBtn = document.getElementById('undo-btn');
+const clearBtn = document.getElementById('clear-btn');
+const downloadBtn = document.getElementById('download-btn');
+const status = document.getElementById('status');
 
-fileInput.addEventListener('change', e => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = evt => {
-    image.src = evt.target.result;
-  };
-  reader.readAsDataURL(file);
+let image = new Image();
+let images = [];
+let currentIndex = 0;
+let annotations = {};
+let boxes = [];
+let startX, startY, drawing = false;
+let classes = [];
+let nextClassId = 0;
+
+function randomColor() {
+  return '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
+}
+
+function updateClassSelect() {
+  classSelect.innerHTML = '';
+  classes.forEach(cls => {
+    const option = document.createElement('option');
+    option.value = cls.id;
+    option.textContent = cls.name;
+    classSelect.appendChild(option);
+  });
+}
+
+function updateClassList() {
+  const list = document.getElementById('class-list');
+  list.innerHTML = '<h3>Classes</h3>';
+  if (classes.length === 0) {
+    list.innerHTML += '<p>No classes yet.</p>';
+    return;
+  }
+  classes.forEach((cls, index) => {
+    const div = document.createElement('div');
+    div.textContent = `${cls.name} (ID: ${cls.id})`;
+    div.style.color = cls.color;
+    const delBtn = document.createElement('button');
+    delBtn.textContent = 'Delete';
+    delBtn.addEventListener('click', () => {
+      const used = boxes.some(box => box.classId === cls.id);
+      if (used) {
+        alert("Cannot delete class that is in use in the current image.");
+        return;
+      }
+      classes.splice(index, 1);
+      updateClassSelect();
+      updateClassList();
+    });
+    div.appendChild(delBtn);
+    list.appendChild(div);
+  });
+}
+
+updateClassSelect();
+updateClassList();
+
+addClassBtn.addEventListener('click', () => {
+  const name = newClassInput.value.trim();
+  if (name) {
+    classes.push({id: nextClassId.toString(), name: name, color: randomColor()});
+    nextClassId++;
+    updateClassSelect();
+    updateClassList();
+    newClassInput.value = '';
+  }
 });
 
-image.onload = () => {
-  canvas.width = image.width;
-  canvas.height = image.height;
-  ctx.drawImage(image, 0, 0);
-  boxes = [];
-};
+fileInput.addEventListener('change', e => {
+  const files = Array.from(e.target.files);
+  if (!files.length) return;
+  images = [];
+  annotations = {};
+  currentIndex = 0;
+  Promise.all(files.map(file => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = evt => {
+        resolve({name: file.name.split('.')[0], src: evt.target.result});
+      };
+      reader.readAsDataURL(file);
+    });
+  })).then(imgs => {
+    images = imgs;
+    loadImage();
+  });
+});
+
+function loadImage() {
+  if (images.length === 0) return;
+  image.src = images[currentIndex].src;
+  const imageName = images[currentIndex].name;
+  boxes = annotations[imageName] || [];
+  image.onload = () => {
+    canvas.width = image.width;
+    canvas.height = image.height;
+    redrawCanvas();
+    updateBoxList();
+    updateStatus();
+    prevBtn.disabled = currentIndex === 0;
+    nextBtn.disabled = currentIndex === images.length - 1;
+  };
+}
+
+function updateStatus() {
+  status.textContent = `Image ${currentIndex + 1}/${images.length} | Boxes: ${boxes.length}`;
+}
+
+prevBtn.addEventListener('click', () => {
+  if (currentIndex > 0) {
+    saveCurrentAnnotations();
+    currentIndex--;
+    loadImage();
+  }
+});
+
+nextBtn.addEventListener('click', () => {
+  if (currentIndex < images.length - 1) {
+    saveCurrentAnnotations();
+    currentIndex++;
+    loadImage();
+  }
+});
+
+function saveCurrentAnnotations() {
+  const imageName = images[currentIndex].name;
+  annotations[imageName] = [...boxes];
+}
 
 canvas.addEventListener('mousedown', e => {
+  if (drawing) return;
+  if (classes.length === 0 || !classSelect.value) {
+    alert("Please add at least one class and select it before drawing a box.");
+    return;
+  }
   const rect = canvas.getBoundingClientRect();
   startX = e.clientX - rect.left;
   startY = e.clientY - rect.top;
@@ -68,9 +204,10 @@ canvas.addEventListener('mousemove', e => {
   const mouseX = e.clientX - rect.left;
   const mouseY = e.clientY - rect.top;
   redrawCanvas();
-  ctx.strokeStyle = 'red';
+  const selectedColor = classes.find(cls => cls.id === classSelect.value)?.color || 'red';
+  ctx.strokeStyle = selectedColor;
   ctx.lineWidth = 2;
-  ctx.strokeRect(startX, startY, mouseX-startX, mouseY-startY);
+  ctx.strokeRect(startX, startY, mouseX - startX, mouseY - startY);
 });
 
 canvas.addEventListener('mouseup', e => {
@@ -78,6 +215,10 @@ canvas.addEventListener('mouseup', e => {
   const rect = canvas.getBoundingClientRect();
   const endX = e.clientX - rect.left;
   const endY = e.clientY - rect.top;
+  if (Math.abs(endX - startX) < 5 || Math.abs(endY - startY) < 5) {
+    drawing = false;
+    return;
+  }
   boxes.push({
     x1: startX, y1: startY,
     x2: endX, y2: endY,
@@ -85,36 +226,108 @@ canvas.addEventListener('mouseup', e => {
   });
   drawing = false;
   redrawCanvas();
+  updateBoxList();
+  updateStatus();
 });
 
-function redrawCanvas() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.drawImage(image, 0, 0);
-  ctx.strokeStyle = 'red';
-  ctx.lineWidth = 2;
-  boxes.forEach(box => {
-    const x = Math.min(box.x1, box.x2);
-    const y = Math.min(box.y1, box.y2);
-    const w = Math.abs(box.x2 - box.x1);
-    const h = Math.abs(box.y2 - box.y1);
-    ctx.strokeRect(x, y, w, h);
-  });
-}
+undoBtn.addEventListener('click', () => {
+  if (boxes.length > 0) {
+    boxes.pop();
+    redrawCanvas();
+    updateBoxList();
+    updateStatus();
+  }
+});
 
-document.getElementById('download-btn').addEventListener('click', () => {
-  if (!boxes.length) return alert("No boxes!");
+clearBtn.addEventListener('click', () => {
+  boxes = [];
+  redrawCanvas();
+  updateBoxList();
+  updateStatus();
+});
+
+downloadBtn.addEventListener('click', () => {
+  if (!boxes.length) return alert("No boxes to download!");
   const lines = boxes.map(box => {
-    const x = (Math.min(box.x1, box.x2) + Math.abs(box.x2-box.x1)/2)/canvas.width;
-    const y = (Math.min(box.y1, box.y2) + Math.abs(box.y2-box.y1)/2)/canvas.height;
-    const w = Math.abs(box.x2-box.x1)/canvas.width;
-    const h = Math.abs(box.y2-box.y1)/canvas.height;
+    const minX = Math.min(box.x1, box.x2);
+    const minY = Math.min(box.y1, box.y2);
+    const width = Math.abs(box.x2 - box.x1);
+    const height = Math.abs(box.y2 - box.y1);
+    const x = (minX + width / 2) / canvas.width;
+    const y = (minY + height / 2) / canvas.height;
+    const w = width / canvas.width;
+    const h = height / canvas.height;
     return `${box.classId} ${x.toFixed(6)} ${y.toFixed(6)} ${w.toFixed(6)} ${h.toFixed(6)}`;
   });
   const blob = new Blob([lines.join('\n')], {type: 'text/plain'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'labels.txt';
+  a.download = `${images[currentIndex].name}.txt`;
   a.click();
+});
+
+function redrawCanvas() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  if (image.src) {
+    ctx.drawImage(image, 0, 0);
+  }
+  ctx.lineWidth = 2;
+  ctx.font = '12px Arial';
+  boxes.forEach(box => {
+    const cls = classes.find(c => c.id === box.classId);
+    ctx.strokeStyle = cls ? cls.color : 'gray';
+    ctx.fillStyle = cls ? cls.color : 'gray';
+    const x = Math.min(box.x1, box.x2);
+    const y = Math.min(box.y1, box.y2);
+    const w = Math.abs(box.x2 - box.x1);
+    const h = Math.abs(box.y2 - box.y1);
+    ctx.strokeRect(x, y, w, h);
+    const label = cls ? cls.name : `Unknown (${box.classId})`;
+    ctx.fillText(label, x + 5, y + 15);
+  });
+}
+
+function updateBoxList() {
+  const list = document.getElementById('box-list');
+  list.innerHTML = '';
+  if (boxes.length === 0) {
+    list.innerHTML = '<p>No boxes yet.</p>';
+    return;
+  }
+  boxes.forEach((box, index) => {
+    const div = document.createElement('div');
+    const minX = Math.min(box.x1, box.x2).toFixed(0);
+    const minY = Math.min(box.y1, box.y2).toFixed(0);
+    const maxX = Math.max(box.x1, box.x2).toFixed(0);
+    const maxY = Math.max(box.y1, box.y2).toFixed(0);
+    const cls = classes.find(c => c.id === box.classId);
+    const classText = cls ? cls.name : `Unknown (${box.classId})`;
+    div.textContent = `Box ${index + 1}: ${classText} (${minX}, ${minY}) to (${maxX}, ${maxY})`;
+    div.style.color = cls ? cls.color : 'gray';
+    const delBtn = document.createElement('button');
+    delBtn.textContent = 'Delete';
+    delBtn.addEventListener('click', () => {
+      boxes.splice(index, 1);
+      redrawCanvas();
+      updateBoxList();
+      updateStatus();
+    });
+    div.appendChild(delBtn);
+    list.appendChild(div);
+  });
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+  if (e.key === 'z' && !drawing) { // Undo
+    undoBtn.click();
+  } else if (e.key === 'c' && !drawing) { // Clear
+    clearBtn.click();
+  } else if (e.key === 'ArrowLeft' && !drawing) { // Prev
+    prevBtn.click();
+  } else if (e.key === 'ArrowRight' && !drawing) { // Next
+    nextBtn.click();
+  }
 });
 </script>
 
