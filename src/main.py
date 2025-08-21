@@ -224,7 +224,7 @@ def main():
     
     ultra_canvas = tk.Canvas(frame_ultralytics, width=20, height=20, highlightthickness=0)
     ultra_canvas.pack(side="left")
-    ultra_circle = ultra_canvas.create_oval(2, 2, 18, 18, fill="gray")  # ultralytics 상태 원
+    ultra_circle = ultra_canvas.create_oval(2, 2, 18, 18, fill="gray")  # ultralytics 상태 표시 원
 
     # ──────────────────────────
     # 하단 정보
