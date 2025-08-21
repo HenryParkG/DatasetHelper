@@ -165,7 +165,7 @@ def main():
     create_button(lf_effects_aug, "이동", "dataAugmentation/dataset_augmentation_translate.py", "이미지를 좌표축 방향으로 이동")
 
     # ───── 데이터 생성 탭 ─────
-    lf_column_ops = ttk.LabelFrame(tab_generator, text="컬럼 작업", padding=10)
+    lf_column_ops = ttk.LabelFrame(tab_generator, text="데이터 쪼개기", padding=10)
     lf_column_ops.pack(fill="x", padx=10, pady=5)
     create_button(lf_column_ops, "4열 분할 데이터 생성", "dataGenerator/dataset_generator_column_splitter.py", "데이터를 컬럼별로 나누어 생성")
     create_button(lf_column_ops, "4열 데이터 1개의 이미지로 통합", "dataGenerator/dataset_generator_column_integrate.py", "컬럼별 데이터를 하나로 합침")
