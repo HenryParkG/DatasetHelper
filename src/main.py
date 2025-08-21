@@ -213,7 +213,7 @@ def main():
     # ───── 테스트 탭 ─────
     lf_yolo_test = ttk.LabelFrame(tab_test, text="YOLO 모델 테스트", padding=10)
     lf_yolo_test.pack(fill="x", padx=10, pady=5)
-    create_button(lf_yolo_test, "모델 테스트", "test/yolo_model_test.py", "YOLO 분류용 데이터셋을 학습/검증용으로 분할")
+    create_button(lf_yolo_test, "모델 테스트", "test/yolo_model_test.py", "YOLO 모델 및 이미지 테스트")
 
     frame_ultralytics = tk.Frame(tab_test)
     frame_ultralytics.pack(pady=5, padx=5, anchor="w")
